@@ -1,9 +1,7 @@
 #  Hint:  You may not need all of these.  Remove the unused functions.
 from hashtables import (HashTable,
                         hash_table_insert,
-                        hash_table_remove,
-                        hash_table_retrieve,
-                        hash_table_resize)
+                        hash_table_retrieve)
 
 
 class Ticket:
@@ -22,27 +20,20 @@ def reconstruct_trip(tickets, length):
     hashtable = HashTable(length)
     route = [None] * length
     # print(tickets)
-    # insert tickets in ht /// source and destination from class
-    for t in tickets:
-        hash_table_insert(hashtable, t.source, t.destination)
+    # Add tickets to the hash table
+    for ticket in tickets:
+        hash_table_insert(hashtable, ticket.source, ticket.destination)
 
-    # count for iteration
-    count = 0
-    # current/start location
-    key = "NONE"
-    # while the last element in the route list is None, it means we haven't hit the end, so keep going
-    while route[-1] is None:
-        # find where the next flight is, store it here. The return of the hash_retrieve is the key of the next flight
-        next_flight = hash_table_retrieve(hashtable, key)
-        # add the flight to the route list
-        route[count] = next_flight        
-        # increment in order to keep moving through list
-        count += 1
-        # change key to where you're at on the list now
-        key = next_flight
+    # First item has a 'NONE' value
+    route[0] = hash_table_retrieve(hashtable, 'NONE')
 
-    print(route)
-    return route
+    # Start with 1, since 0th is confirmed
+    for i in range(1, length):
+        # Next destination uses the previous key as destination value
+        route[i] = hash_table_retrieve(hashtable, route[i-1])
+
+    # Remove the destination 'NONE' value
+    return route[0:length-1]
 
 
 ticket_1 = Ticket("NONE", "PDX")
