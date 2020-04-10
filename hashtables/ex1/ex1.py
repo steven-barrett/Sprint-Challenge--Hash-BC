@@ -19,7 +19,7 @@ def get_indices_of_item_weights(weights, length, limit):
         # print('looking for key', weight_left,
         hash_table_retrieve(ht, weight_left)
         if hash_table_retrieve(ht, weight_left) != None:
-            # print('found item')
+            # print('found item') 
             if hash_table_retrieve(ht, weight_left) > index:
                 answer.append(hash_table_retrieve(ht, weight_left))
                 answer.append(index)
