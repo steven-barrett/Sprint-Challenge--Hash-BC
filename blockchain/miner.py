@@ -58,11 +58,11 @@ if __name__ == '__main__':
         node = sys.argv[1]
     else:
         node = "https://lambda-coin.herokuapp.com/api"
-
+    # lambda-coin-test-1  node = "https://lambda-coin.herokuapp.com/api"
     coins_mined = 0
 
     # Load or create ID
-    f = open("my_id.txt", "r")
+    f = open("C:\\users\\steve\\documents\\lambda\\Sprint-Challenge--Hash-BC\\blockchain\\my_id.txt", "r")
     id = f.read()
     print("ID is", id)
     f.close()
