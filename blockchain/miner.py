@@ -23,12 +23,16 @@ def proof_of_work(last_proof):
     start = timer()
 
     print("Searching for next proof")
-    proof = 0
+    proof = 1
     #  TODO: Your code here
+    last_hash = f'{last_proof}'.encode() 
+    prev_hash = hashlib.sha256(last_hash).hexdigest()
+
+    while not valid_proof(prev_hash, proof):
+        proof += 1
 
     print("Proof found: " + str(proof) + " in " + str(timer() - start))
     return proof
-
 
 def valid_proof(last_hash, proof):
     """
@@ -40,8 +44,11 @@ def valid_proof(last_hash, proof):
     """
 
     # TODO: Your code here!
-    pass
-
+    guess = f'{proof}'.encode()
+    guess_hash = hashlib.sha256(guess).hexdigest()
+    return guess_hash[:5] == last_hash[-5:]
+    # guess = hashlib.sha256(f'{proof}'.encode()).hexdigest()
+    # return guess[:6] == last_hash[-6:]
 
 if __name__ == '__main__':
     # What node are we interacting with?
@@ -49,11 +56,11 @@ if __name__ == '__main__':
         node = sys.argv[1]
     else:
         node = "https://lambda-coin.herokuapp.com/api"
-
+    # lambda-coin-test-1  node = "https://lambda-coin.herokuapp.com/api"
     coins_mined = 0
 
     # Load or create ID
-    f = open("my_id.txt", "r")
+    f = open("C:\\users\\steve\\documents\\lambda\\Sprint-Challenge--Hash-BC\\blockchain\\my_id.txt", "r")
     id = f.read()
     print("ID is", id)
     f.close()
@@ -65,8 +72,16 @@ if __name__ == '__main__':
     while True:
         # Get the last proof from the server
         r = requests.get(url=node + "/last_proof")
-        data = r.json()
+        try:
+            data = r.json()
+        except ValueError:
+            print("Error:  Non-json response")
+            print("Response returned:")
+            print(r)
+            break
         new_proof = proof_of_work(data.get('proof'))
+        if new_proof is None:
+            continue
 
         post_data = {"proof": new_proof,
                      "id": id}
